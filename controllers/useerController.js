@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 const commonStatusCode = require("../middleware/statusCode")
 const commonErrorMessages = require("../middleware/errorMessages")
 const errorHandler = require('../middleware/errorHandler')
@@ -8,8 +10,8 @@ const userService = require("../services/userService")
 exports.createUserController = async (req, res, next) => {
     try {
         let body = req.body
-        const checkUserData = await userService.checkUserExists(body.user_email)
-        console.log('checkUserData', checkUserData)
+        const checkUserData = await userService.checkUserExists({ user_email: body.user_email })
+        // console.log('checkUserData', checkUserData)
         if (checkUserData) {
             errorHandler({
                 statusCode: commonStatusCode.clientCodes.Bad_Request,
@@ -25,6 +27,53 @@ exports.createUserController = async (req, res, next) => {
             }
         }
     } catch (error) {
+        errorHandler({
+            statusCode: commonStatusCode.serverCodes.Internal_Server_Error,
+            message: error.message
+        }, req, res, next)
+    }
+}
+
+exports.loginUserController = async (req, res, next) => {
+    try {
+        let body = req.body
+        const checkUserData = await userService.checkUserExists({
+            user_email: body.user_email,
+            user_password: body.user_password
+        })
+        console.log('checkUserData', checkUserData)
+        if (checkUserData) {
+            const jwtToken = jwt.sign(checkUserData.toJSON(), process.env.secret_key, { expiresIn: '1h' });
+            console.log('jwtToken', jwtToken)
+            successHandler({
+                statusCode: commonStatusCode.successCodes.OK,
+                message: successMessage.Messages.LOGIN_SUCCESS_MESSAGE,
+                token: jwtToken
+            }, req, res, next)
+        } else {
+            errorHandler({
+                statusCode: commonStatusCode.clientCodes.Bad_Request,
+                message: commonErrorMessages.errorMessages.INVALID_CREDIENTIAL
+            }, req, res, next)
+        }
+    } catch (error) {
+        console.log('error', error)
+        errorHandler({
+            statusCode: commonStatusCode.serverCodes.Internal_Server_Error,
+            message: error.message
+        }, req, res, next)
+    }
+}
+
+exports.listUserController = async (req, res, next) => {
+    try {
+        console.log(req.user ? "1" : 0)
+        successHandler({
+            statusCode: commonStatusCode.successCodes.OK,
+            message: successMessage.Messages.LOGIN_SUCCESS_MESSAGE,
+        }, req, res, next)
+    } catch (error) {
+        console.log('error', error)
         errorHandler({
             statusCode: commonStatusCode.serverCodes.Internal_Server_Error,
             message: error.message

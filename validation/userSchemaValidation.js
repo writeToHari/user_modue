@@ -9,11 +9,28 @@ const schema = {
         user_email: joi.string().email().required(),
         user_phone_number: joi.string().length(10).pattern(/^[0-9]+$/).required(),
         user_password: joi.string().required()
+    }),
+
+    userLoginSchema: joi.object({
+        user_email: joi.string().email().required(),
+        user_password: joi.string().required()
     })
 }
 
 exports.userCreationValidation = (req, res, next) => {
     const { error } = schema.userCreationSchema.validate(req.body)
+    if (error) {
+        errorHandler({
+            statusCode: commonStatusCode.clientCodes.Bad_Request,
+            message: error.details[0].message
+        }, req, res, next)
+    } else {
+        next();
+    }
+}
+
+exports.userLoginValidation = (req, res, next) => {
+    const { error } = schema.userLoginSchema.validate(req.body)
     if (error) {
         errorHandler({
             statusCode: commonStatusCode.clientCodes.Bad_Request,

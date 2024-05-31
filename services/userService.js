@@ -4,6 +4,6 @@ exports.createUserService = async (body) => {
     return userSchema.create(body);
 }
 
-exports.checkUserExists = async (email) => {
-    return userSchema.findOne({ user_email: email })
+exports.checkUserExists = async (data) => {
+    return userSchema.findOne(data)
 }

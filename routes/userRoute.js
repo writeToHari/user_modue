@@ -8,5 +8,11 @@ const router = express.Router()
 
 router.post('/create', validation.userCreationValidation, userController.createUserController)
 
+router.post('/login', validation.userLoginValidation, userController.loginUserController)
+
+router.get('/list', userController.listUserController)
+
+
+
 
 module.exports = router

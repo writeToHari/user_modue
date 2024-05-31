@@ -5,7 +5,8 @@ const successHandler = (successResponse, req, res, next) => {
     res.status(statusCode).json({
         success: true,
         status: statusCode,
-        message: message
+        message: message,
+        ...successResponse.token ? { "token": successResponse.token } : ""
     });
 };
 
