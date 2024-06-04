@@ -6,7 +6,8 @@ const successHandler = (successResponse, req, res, next) => {
         success: true,
         status: statusCode,
         message: message,
-        ...successResponse.token ? { "token": successResponse.token } : ""
+        ...successResponse.token ? { "token": successResponse.token } : "",
+        ...successResponse.data ? {"data": successResponse.data} : ''
     });
 };
 

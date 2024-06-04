@@ -6,6 +6,7 @@ const errorHandler = require('../middleware/errorHandler')
 const successMessage = require('../middleware/successMessage')
 const successHandler = require('../middleware/successHandler')
 const userService = require("../services/userService")
+const verifyToken = require("../config/verify_jwt")
 
 exports.createUserController = async (req, res, next) => {
     try {
@@ -67,11 +68,7 @@ exports.loginUserController = async (req, res, next) => {
 
 exports.listUserController = async (req, res, next) => {
     try {
-        console.log(req.user ? "1" : 0)
-        successHandler({
-            statusCode: commonStatusCode.successCodes.OK,
-            message: successMessage.Messages.LOGIN_SUCCESS_MESSAGE,
-        }, req, res, next)
+        verifyToken.verifyJwtToken(req, res, next)
     } catch (error) {
         console.log('error', error)
         errorHandler({

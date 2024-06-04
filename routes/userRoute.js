@@ -10,7 +10,7 @@ router.post('/create', validation.userCreationValidation, userController.createU
 
 router.post('/login', validation.userLoginValidation, userController.loginUserController)
 
-router.get('/list', userController.listUserController)
+router.get('/details', userController.listUserController)
 
 
 
